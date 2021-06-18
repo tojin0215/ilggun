@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     paddingTop:hp('1.2')
   },
   modalBtn2:{
-    width:wp('39%'), height:hp('5.5%'),
+    width:wp('29%'), height:hp('5.5%'),
     textAlign:"center",
     fontSize: wp('4.5%'),
     fontFamily:"NanumSquare",
@@ -181,7 +181,7 @@ function setModalVisibility(visible, msg ,t, index, r) {
       setVisibility3(visible)
     }
   }
-  async function savedData() { 
+  async function savedData(t) { 
     let busi = message.split('(')[1].split(')')[0];
     axios.post('http://13.124.141.28:3000/selectBusinessByName', {
             bname: busi
@@ -251,23 +251,42 @@ function setModalVisibility(visible, msg ,t, index, r) {
                     'Accept': 'application/json'}
                   })
                   });
-              
-                  try {
-                    axios.post('http://13.124.141.28:3000/sendMessage', {
-                      f: id,
-                      message :"<"+busi+">에서 "+to+"님의 휴가 신청("+d+")을 승인하였습니다.",
-                      t: to,
-                      r:0,
-                      system:1,
-                      type:3
-                    },
-                    {  headers:{
-                      'Content-Type': 'application/json',
-                      'Accept': 'application/json'}
-                  }).then((res) => {
-                  })} catch (e) {
-                    console.error(e);
+                  if (t == 1) {
+                    try {
+                      axios.post('http://13.124.141.28:3000/sendMessage', {
+                        f: id,
+                        message :"<"+busi+">에서 "+to+"님의 무급 휴가 신청("+d+")을 승인하였습니다.",
+                        t: to,
+                        r:0,
+                        system:1,
+                        type:3
+                      },
+                      {  headers:{
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'}
+                    }).then((res) => {
+                    })} catch (e) {
+                      console.error(e);
+                    }
+                  } else {
+                    try {
+                      axios.post('http://13.124.141.28:3000/sendMessage', {
+                        f: id,
+                        message :"<"+busi+">에서 "+to+"님의 유급 휴가 신청("+d+")을 승인하였습니다.",
+                        t: to,
+                        r:0,
+                        system:1,
+                        type:3
+                      },
+                      {  headers:{
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'}
+                    }).then((res) => {
+                    })} catch (e) {
+                      console.error(e);
+                    }
                   }
+                  
                 } catch (e) {
                   console.error(e);
                 }
@@ -394,7 +413,7 @@ function setModalVisibility(visible, msg ,t, index, r) {
           {  headers:{
             'Content-Type': 'application/json',
             'Accept': 'application/json'}
-          })
+          })  
           .then(res => {
             try {
               axios.post('http://13.124.141.28:3000/sendMessage', {
@@ -512,11 +531,21 @@ function setModalVisibility(visible, msg ,t, index, r) {
                   style={styles.modalBtn2}
                   onPress={() => {
                     setModalVisibility(!visibility2,'',2)
-                    savedData();
+                    savedData(1);
                     alterRead();
 
                   }}
-                >네</Text>
+                >무급</Text>
+                <Text
+                  style={styles.modalBtn2}
+                  onPress={() => {
+                    setModalVisibility(!visibility2,'',2)
+                    savedData(2);
+                    alterRead();
+
+                  }}
+                >유급</Text>
+              
                 <Text
                   style={styles.modalBtn2}
                   onPress={() => {
