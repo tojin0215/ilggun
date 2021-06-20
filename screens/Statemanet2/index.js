@@ -294,6 +294,16 @@ class StatementScreen2 extends Component{
                       style="fill:none;stroke:black;stroke-width:3" />
               </svg>`
             }
+            let salary_default = t[0]
+            let salary_more_work = t[1]
+            let meals = t[2]
+            let gookmin = t[3]
+            let gungang = t[4]
+            let longterm_care = t[5]
+            let employment_insurance = t[6]
+            let income_tax = t[7]
+            let residence_tax = t[8]
+
             html =`
               <!DOCTYPE html>
               <html>

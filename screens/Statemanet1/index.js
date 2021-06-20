@@ -45,64 +45,69 @@ class StatementScreen1 extends React.Component {
           bangcode: '',
           id:'',
       }
+      // 데이터 불러오기
       AsyncStorage.getItem("bangCode")
       .then((bangCode) => {
         this.setState({bangcode:bangCode});
         this.fetchData(bangCode)
       })
-      
+      // 데이터 불러오기
       AsyncStorage.getItem("userData").then((userData) =>{
         this.setState({id:JSON.parse(userData).id});
       });
     }
 
+    fetchSelectOvertimework = async (year, month) => {
+      await axios
+        .post(
+          "http://13.124.141.28:3000/selectOvertimework",
+          {
+            business: bangCode,
+            year: year,
+            month: month,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+          }
+        )
+        .then(async (res) => {
+          console.log("Response: selectOvertimework");
+          console.log(res.data);
+          let dic = {};
+          for (let i = 0; i < res.data.length; i++) {
+            if (!dic[res.data[i].workername]) {
+              dic[res.data[i].workername] = res.data[i].subt;
+            } else {
+              dic[res.data[i].workername] += res.data[i].subt; //this.setState({addtime :{...this.state.addtime, n : s}});
+            }
+          }
+          console.log("Response: selectOvertimework");
+          console.log(dic);
+          this.setState({ addtime: dic });
+        });
+    };
+
     fetchData = async(bangCode) => { 
       try {
-        if(this.state.itemA.split('년')[0]*1>new Date().getFullYear() || 
-        (this.state.itemA.split('년')[0]*1==new Date().getFullYear() && this.state.itemB.split('월')[0]*1>new Date().getMonth()+1)){
-          console.log("????")
+        const now_year = new Date().getFullYear()
+        const year = this.state.itemA.split('년')[0]*1
+
+        const now_month = new Date().getMonth()+1
+        const month = this.state.itemB.split('월')[0]*1
+
+        // 미래 일시 입력 감지
+        if(year>now_year || (year==now_year && month>now_month)){
+          console.log("미래 입력 감지")
           this.setState({arrName:[]}, () => this.show())
         }
+
+
         else{
           console.log(bangCode);
-          await axios.post('http://13.124.141.28:3000/selectOvertimework', {
-            business: bangCode,
-            year : this.state.itemA.split('년')[0]*1,
-            month : this.state.itemB.split('월')[0]*1,
-          },
-          {  headers:{
-            'Content-Type': 'application/json',
-            'Accept': 'application/json'}
-          })
-          /*  await fetch('http://13.124.141.28:3000/selectOvertimework', {
-                  method: 'POST',
-                  headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify({
-                    year : this.state.itemA.split('년')[0]*1,
-                    month : this.state.itemB.split('월')[0]*1,
-                  }),
-                }).then(res => res.json())*/
-                .then(async(res) => {
-                  console.log("???");
-                    console.log(res.data);
-                  let dic ={};
-                  for(let i=0 ; i<res.data.length ; i++){
-                    if(!dic[res.data[i].workername]){
-                      dic[res.data[i].workername] = res.data[i].subt;   
-                    }
-                    else{
-                      dic[res.data[i].workername] += res.data[i].subt;   //this.setState({addtime :{...this.state.addtime, n : s}});
-                    }
-                  }
-                  console.log("???");
-                    console.log(dic);
-                  this.setState({addtime : dic})
-                  
-
-                });
+          this.fetchSelectOvertimework(year, month);
 
                 await axios.post('http://13.124.141.28:3000/selectWorker', {
                   business : bangCode
@@ -111,26 +116,23 @@ class StatementScreen1 extends React.Component {
                   'Content-Type': 'application/json',
                   'Accept': 'application/json'}
                 })
-            /*let res = await fetch('http://13.124.141.28:3000/selectWorker', {
-              method: 'POST',
-              headers: {
-                Accept: 'application/json',
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                business : bangCode
-              }),
-            }).then(res => res.json())*/
             .then(res => {
+              const now_year = new Date().getFullYear()
+              const year = this.state.itemA.split('년')[0]*1
+      
+              const now_month = new Date().getMonth()+1
+              const month = this.state.itemB.split('월')[0]*1
+      
+
               let rowall = []
-              if(this.state.itemA.split('년')[0]*1!=new Date().getFullYear() || this.state.itemB.split('월')[0] != new Date().getMonth()+1){
+              if(year!=now_year || month != now_month){
                 let week=[4,4,4,4,4,4,4];
           
                 // console.log(this.state.itemA.split('년')[0]+' '+ this.state.itemB.split('월')[0])
-                  let nalsu = new Date(this.state.itemA.split('년')[0], this.state.itemB.split('월')[0], 0).getDate();
+                  let nalsu = new Date(year, tmonth, 0).getDate();
                   let namugi = nalsu%7;
-                  let it = new Date(this.state.itemA.split('년')[0], this.state.itemB.split('월')[0], 0).getDay();
-                  console.log(nalsu, namugi, it, this.state.itemA.split('년')[0], this.state.itemB.split('월')[0]);
+                  let it = new Date(year, month, 0).getDay();
+                  console.log(nalsu, namugi, it, year, month);
                   for(let i=0 ; i<namugi ; i++){
                     week[(it-i)%7]++;
                   }
@@ -401,6 +403,39 @@ class StatementScreen1 extends React.Component {
                   tableTitleArr.push(this.state.arrName[i][1])
                   MonthlySalary = this.state.arrName[i][3]
                   AddSalary = this.state.arrName[i][4]
+
+                  let meals = 0;
+                  let childcare_allowances = 0;
+                  let fuel_cost = 0;
+
+                  let exceed_meals = 0;
+                  let exceed_childcare_allowances = 0;
+                  let exceed_fuel_cost = 0;
+                  try{
+                    meals = this.state.arrName[i][5]
+                  } catch {}
+                  
+                  try{
+                    childcare_allowances = this.state.arrName[i][6]
+                  } catch {}
+                  
+                  try{
+                    fuel_cost = this.state.arrName[i][7]
+                  } catch {}
+                  // 식비 10/육아수당10/자기유류비20
+                  const MAX_MEALS = 100_000;
+                  const MAX_CHILDCARE_ALLOWANCES = 100_000;
+                  const MAX_FUEL_COST = 200_000;
+
+                  if (meals > MAX_MEALS) {
+                    exceed_meals = meals - MAX_MEALS;
+                  }
+                  if (meals > MAX_CHILDCARE_ALLOWANCES) {
+                    exceed_childcare_allowances = childcare_allowances - MAX_CHILDCARE_ALLOWANCES;
+                  }
+                  if (fuel_cost > MAX_MEALS) {
+                    exceed_fuel_cost = fuel_cost - MAX_MEALS;
+                  }
       
                   // NationalPension:국민연금 (보수총액*4.5%)
                   let NationalPension = Math.floor(((parseInt(MonthlySalary)*4.5/100).toFixed(0))/10)*10;
@@ -546,6 +581,7 @@ class StatementScreen1 extends React.Component {
                     // TotalDeduction:공제총액(사대보험+갑근세+주민세)
                   let TotalDeduction = parseInt(SocialInsurance) + parseInt(IncomeTax) + parseInt(InhabitantsTax)
       
+
       
                   // 실지급액(보수총액+추가급여-공제총액)
                   let ActualSalary = parseInt(MonthlySalary) + parseInt(AddSalary) - parseInt(TotalDeduction);
@@ -736,6 +772,7 @@ let WithholdingTax = parseInt(IncomeTaxPartTime) + parseInt(InhabitantsTaxPartTi
             
              {/*<View style={styles.buttonArea}>
                     <TouchableOpacity
+                    
                         style={styles.button1}
                         onPress={()=> this.clickHandler()}>
                         <Image style={styles.excelBtn} source={require('../../img/excel.png')}></Image>

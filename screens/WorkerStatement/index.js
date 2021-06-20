@@ -696,7 +696,7 @@ class WorkerStatementScreen extends Component{
         // 실지급액(지급총액-공제총액)
         let ActualSalaryPartTime = parseInt(TotalPaymentPartTime) - parseInt(WithholdingTax)
 
-          
+
               if(WorkingType=='정규직'){ // -------정규------
                   this.setState({
                       Name:this.state.itemB, WorkingType:'정규직',
