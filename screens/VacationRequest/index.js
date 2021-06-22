@@ -157,12 +157,10 @@ class VacationRequestScreen extends Component{
         }
         else{
           Alert.alert("휴가신청 사유를 입력해주세요.")
-          this.props.navigation.navigate('Worker Home');
         }
       }
     else{  
       Alert.alert("날짜가 제대로 입력되었는지 확인해주세요.")
-      this.props.navigation.navigate('Worker Home');
     }
     } catch (e) {
       Alert.alert("휴가 신청이 완료되었습니다.")
