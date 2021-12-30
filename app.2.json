@@ -1,0 +1,64 @@
+{
+  "expo": {
+    "name": "일꾼",
+    "slug": "pro1",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "platforms": [
+      "ios",
+      "android"
+    ],
+    "android": {
+      "permissions":[],
+      "googleServicesFile": "./google-services.json",
+      "config": {
+        "googleSignIn": {
+            "certificateHash": "DC:63:1A:19:FD:BC:71:E2:EC:C4:20:4E:14:7E:CB:EC:01:B8:64:28"
+        }
+      },
+      "versionCode": 2,
+      "package": "com.tojin.ilggun",
+      "icon" : "./img/logo.png"
+    },
+    "ios": {
+      "bundleIdentifier": "com.tojin.ilggun",
+      "buildNumber":"1.0.3",
+      "icon" : "./img/logo_ios.png",
+      "supportsTablet": false,
+      "usesAppleSignIn": true,
+      "config":{
+        "googleSignIn":{
+          "reservedClientId":"com.googleusercontent.apps.567366538740-kb7dd4hcclbjsovh2tmdcdedhmov2jqk"
+        }
+      },
+      "googleServicesFile": "./GoogleService-Info.plist",
+      "infoPlist": {
+        "NSAppTransportSecurity": {
+          "NSExceptionDomains": {
+            "http://13.124.141.28:3000": {
+              "NSTemporaryExceptionAllowsInsecureHTTPLoads": true
+            },
+            "http://13.124.141.28": {
+              "NSTemporaryExceptionAllowsInsecureHTTPLoads": true
+            }
+          }
+        }
+      }
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    }
+  }
+}

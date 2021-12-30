@@ -414,14 +414,13 @@ class StatementScreen1 extends React.Component {
                   try{
                     meals = this.state.arrName[i][5]
                   } catch {}
-                  
                   try{
                     childcare_allowances = this.state.arrName[i][6]
                   } catch {}
-                  
                   try{
                     fuel_cost = this.state.arrName[i][7]
                   } catch {}
+
                   // 식비 10/육아수당10/자기유류비20
                   const MAX_MEALS = 100_000;
                   const MAX_CHILDCARE_ALLOWANCES = 100_000;
@@ -433,9 +432,11 @@ class StatementScreen1 extends React.Component {
                   if (meals > MAX_CHILDCARE_ALLOWANCES) {
                     exceed_childcare_allowances = childcare_allowances - MAX_CHILDCARE_ALLOWANCES;
                   }
-                  if (fuel_cost > MAX_MEALS) {
-                    exceed_fuel_cost = fuel_cost - MAX_MEALS;
+                  if (fuel_cost > MAX_FUEL_COST) {
+                    exceed_fuel_cost = fuel_cost - MAX_FUEL_COST;
                   }
+
+                  
       
                   // NationalPension:국민연금 (보수총액*4.5%)
                   let NationalPension = Math.floor(((parseInt(MonthlySalary)*4.5/100).toFixed(0))/10)*10;
@@ -581,7 +582,7 @@ class StatementScreen1 extends React.Component {
                     // TotalDeduction:공제총액(사대보험+갑근세+주민세)
                   let TotalDeduction = parseInt(SocialInsurance) + parseInt(IncomeTax) + parseInt(InhabitantsTax)
       
-
+                  
       
                   // 실지급액(보수총액+추가급여-공제총액)
                   let ActualSalary = parseInt(MonthlySalary) + parseInt(AddSalary) - parseInt(TotalDeduction);
@@ -757,7 +758,7 @@ let WithholdingTax = parseInt(IncomeTaxPartTime) + parseInt(InhabitantsTaxPartTi
                         </TableWrapper>
                     </Table>
                 </View>
-            
+
                 <View style={styles.buttonArea}>
                     <TouchableOpacity
                         style={styles.button1}
@@ -768,7 +769,7 @@ let WithholdingTax = parseInt(IncomeTaxPartTime) + parseInt(InhabitantsTaxPartTi
                 
                 <View style={{marginTop:hp('5%')}}><Text></Text></View>
                 </ScrollView>
-             
+
             
              {/*<View style={styles.buttonArea}>
                     <TouchableOpacity

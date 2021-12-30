@@ -32,7 +32,8 @@ class StatementScreen2 extends Component{
       this.state = {
           itemA: null , isVisibleA: false, itemB: null, isVisibleB: false,itemAA: String(new Date().getFullYear())+'년' , isVisibleAA: false, itemBB: String(new Date().getMonth()+1)+'월', isVisibleBB: false,
           PaymentSum:'-', DeductionSum:'-', Difference:'-', Name:'-', WorkingType:'-',
-          tableTitle:['기본급','추가근로수당','식대','국민연금','건강보험료','장기요양보험료','고용보험료','소득세','주민세'],
+          // tableTitle:['기본급','추가근로수당','식대','국민연금','건강보험료','장기요양보험료','고용보험료','소득세','주민세'],
+          tableTitle:['기본급','과세 수당','비과세 수당','국민연금','건강보험료','장기요양보험료','고용보험료','소득세','주민세'],
           tableData: [
               ['-','-','-','-','-','-','-','-','-'],
           ],
@@ -462,6 +463,38 @@ class StatementScreen2 extends Component{
                 }
                 break;
             }
+        }
+
+        let meals = 0;
+        let childcare_allowances = 0;
+        let fuel_cost = 0;
+
+        let exceed_meals = 0;
+        let exceed_childcare_allowances = 0;
+        let exceed_fuel_cost = 0;
+        try{
+          meals = this.state.arrName[i][5]
+        } catch {}
+        try{
+          childcare_allowances = this.state.arrName[i][6]
+        } catch {}
+        try{
+          fuel_cost = this.state.arrName[i][7]
+        } catch {}
+
+        // 식비 10/육아수당10/자기유류비20
+        const MAX_MEALS = 100_000;
+        const MAX_CHILDCARE_ALLOWANCES = 100_000;
+        const MAX_FUEL_COST = 200_000;
+
+        if (meals > MAX_MEALS) {
+          exceed_meals = meals - MAX_MEALS;
+        }
+        if (meals > MAX_CHILDCARE_ALLOWANCES) {
+          exceed_childcare_allowances = childcare_allowances - MAX_CHILDCARE_ALLOWANCES;
+        }
+        if (fuel_cost > MAX_FUEL_COST) {
+          exceed_fuel_cost = fuel_cost - MAX_FUEL_COST;
         }
 
         //----------------------계산식---------------------------------------------
